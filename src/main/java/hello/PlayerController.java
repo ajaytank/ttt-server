@@ -14,11 +14,8 @@ public class PlayerController {
     private GameRepository gameRepository;
 
     @GetMapping("/login/{credentials}")
-    public String login(@PathVariable("credentials") String credentials) {
-        if (playerService.login(credentials)) {
-            return "SUCCESS";
-        }
-        return "FAILURE";
+    public Player login(@PathVariable("credentials") String credentials) {
+        return playerService.login(credentials);
     }
 
     @GetMapping("/{playerId}")

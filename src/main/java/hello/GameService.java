@@ -25,7 +25,32 @@ public class GameService {
         Game game1 = gameRepository.findById(gameId).get();
         String state = game.state;
 
-        char[] stateChar = state.toCharArray();
+        if (state != null) {
+            char[] stateChar = state.toCharArray();
+
+
+            String verdict = checkGame(stateChar);
+
+            if (verdict.equals("WIN")) {
+                game1.status = "COMPLETED";
+                game1.result = game1.activePlayer + "WINS";
+            } else if (verdict.equals("DRAW")) {
+                game1.status = "COMPLETED";
+                game1.result = "GAME IS DRAWN";
+            }
+
+            game1.state = state;
+            game1.activePlayer = 1 + Math.abs(1 - (game1.activePlayer - 1));
+        }
+
+        if (game.status != null && game.status.equals("ABANDONED")) {
+            game1.status = game.status;
+        }
+        gameRepository.save(game1);
+        return game1;
+    }
+
+    private String checkGame(char[] stateChar) {
 
         int count = 0;
         for (int i = 0; i < stateChar.length; i++) {
@@ -35,12 +60,44 @@ public class GameService {
         }
 
         if (count == 0) {
-            game1.status = "COMPLETED";
+            return "DRAW";
         }
 
-        game1.state = state;
-        game1.activePlayer = 1 + Math.abs(1 - (game1.activePlayer - 1));
-        gameRepository.save(game1);
-        return game1;
+        char[] c = stateChar;
+
+        if (c[0] != ' ' && c[0] == c[1] && c[1] == c[2]) {
+            return "WIN";
+        }
+
+        if (c[3] != ' ' && c[3] == c[4] && c[4] == c[5]) {
+            return "WIN";
+        }
+
+        if (c[6] != ' ' && c[6] == c[7] && c[7] == c[8]) {
+            return "WIN";
+        }
+
+        if (c[0] != ' ' && c[0] == c[3] && c[3] == c[6]) {
+            return "WIN";
+        }
+
+        if (c[1] != ' ' && c[1] == c[4] && c[4] == c[7]) {
+            return "WIN";
+        }
+
+        if (c[2] != ' ' && c[2] == c[5] && c[5] == c[8]) {
+            return "WIN";
+        }
+
+        if (c[0] != ' ' && c[0] == c[4] && c[4] == c[8]) {
+            return "WIN";
+        }
+
+        if (c[2] != ' ' && c[2] == c[4] && c[4] == c[6]) {
+            return "WIN";
+        }
+
+        return "CONTINUE";
+
     }
 }

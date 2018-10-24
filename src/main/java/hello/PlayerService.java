@@ -65,7 +65,7 @@ public class PlayerService {
         }
     }
 
-    public boolean login(String credentials) {
+    public Player login(String credentials) {
         try {
             String[] cred = credentials.split(":");
             String username = cred[0];
@@ -73,12 +73,12 @@ public class PlayerService {
 
             Player player = playerRepository.findByUsername(username);
             if (player.getPassword().equals(password)) {
-                return true;
+                return player;
             }
         } catch (Exception e) {
-            return false;
+            return null;
         }
 
-        return false;
+        return null;
     }
 }
